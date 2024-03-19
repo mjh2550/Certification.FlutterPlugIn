@@ -26,4 +26,20 @@ abstract class CertificationPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<int?> libInitialize() {
+    throw UnimplementedError('libInitialize() has not been implemented.');
+  }
+
+  Future<bool?> setServiceUrl(String url) {
+    throw UnimplementedError('setServiceUrl() has not been implemented.');
+  }
+
+  Future<String?> getCertification(String userId) {
+    throw UnimplementedError('getCertification() has not been implemented.');
+  }
+
+  Future<List<Object?>?> getUserCertificateListWithGpki() {
+    throw UnimplementedError('getUserCertificateListWithGpki() has not been implemented.');
+  }
 }

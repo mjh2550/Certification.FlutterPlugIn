@@ -1,0 +1,92 @@
+group 'com.ezcaretech.certification'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.7.10'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.ezcaretech.certification'
+    }
+
+    compileSdkVersion 33
+
+    productFlavors {
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    defaultConfig {
+        minSdkVersion 19
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "x86_64", "mips", "mips64"
+        }
+    }
+
+    dependencies {
+        // signkorea(전자서명)
+        implementation files('libs/ksoap2-base-3.6.4.jar')
+        implementation files('libs/ksoap2-j2se-3.6.4.jar')
+        implementation files('libs/KeySharpWireless1_ex_1.5.0.jar')
+        implementation fileTree(dir: 'libs\\iCert', include: ['*.aar', '*.jar'], exclude: [])
+        implementation fileTree(dir: 'libs\\signkorea', include: ['*.aar', '*.jar'], exclude: ['SignKorea-Android.jar'])
+
+        //SEED알고리즘
+        implementation 'org.bouncycastle:bcpkix-jdk15on:1.68'
+        implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
+
+        testImplementation 'org.jetbrains.kotlin:kotlin-test'
+        testImplementation 'org.mockito:mockito-core:5.0.0'
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+
+            testLogging {
+               events "passed", "skipped", "failed", "standardOut", "standardError"
+               outputs.upToDateWhen {false}
+               showStandardStreams = true
+            }
+        }
+    }
+}

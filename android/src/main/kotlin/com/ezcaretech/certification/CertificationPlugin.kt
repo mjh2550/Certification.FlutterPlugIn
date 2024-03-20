@@ -46,24 +46,32 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else if (call.method == "libInitialize") {
-      result.success(KSCertificateManager.libInitialize())
-    } else if (call.method == "setServiceUrl") {
-      iCertClient.SetServiceUrl(call.argument("url"))
-    } else if (call.method == "getCertification") {
-      thread {
-        result.success(iCertClient.GetCertification(call.argument("userId")))
+    when (call.method) {
+      "getPlatformVersion" -> {
+        result.success("Android ${android.os.Build.VERSION.RELEASE}")
       }
-    } else if (call.method == "getUserCertificateListWithGpki") {
-      try {
-        result.success(getCertifications())
-      } catch (ex: KSException) {
-        result.error("KSException", ex.message, ex.stackTrace)
+      "libInitialize" -> {
+        result.success(KSCertificateManager.libInitialize())
       }
-    } else {
-      result.notImplemented()
+      "setServiceUrl" -> {
+        iCertClient.SetServiceUrl(call.argument("url"))
+        result.success(true)
+      }
+      "getCertification" -> {
+        thread {
+          result.success(iCertClient.GetCertification(call.argument("userId")))
+        }
+      }
+      "getUserCertificateListWithGpki" -> {
+        try {
+          result.success(getCertifications())
+        } catch (ex: KSException) {
+          result.error("KSException", ex.message, ex.stackTrace)
+        }
+      }
+      else -> {
+        result.notImplemented()
+      }
     }
   }
 

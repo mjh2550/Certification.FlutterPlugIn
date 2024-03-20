@@ -20,7 +20,7 @@ class MockCertificationPlatform
   }
 
   @override
-  Future<int?> libInitialize() => 3701;
+  Future<int?> libInitialize() => Future.value(3701);
 
   @override
   Future<bool?> setServiceUrl(String url) => Future.value(true);
@@ -46,6 +46,6 @@ void main() {
     MockCertificationPlatform fakePlatform = MockCertificationPlatform();
     CertificationPlatform.instance = fakePlatform;
 
-    expect(await certificationPlugin.libInitialize(), 0);
+    expect(await certificationPlugin.libInitialize(), 3701);
   });
 }

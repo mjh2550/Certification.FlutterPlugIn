@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // initPlatformState();
+    initPlatformState();
     initCertificate();
   }
 
@@ -48,27 +48,21 @@ class _MyAppState extends State<MyApp> {
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    setState(() => _platformVersion = platformVersion);
   }
 
   Future<void> initCertificate() async {
-    int libInitializeResult;
-    String certDn;
+    int? libInitializeResult;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
       await requestPermission(Permission.storage);
       await requestPermission(Permission.manageExternalStorage);
-      libInitializeResult = await _certificationPlugin.libInitialize() ?? -1;
+      libInitializeResult = await _certificationPlugin.libInitialize();
       await _certificationPlugin.setServiceUrl(
           'http://172.17.14.41/CERTWebservice/HIS.Cert.WebService.asmx');
-      certDn = await _certificationPlugin.getCertification('C0EMR') ??
-          'Unknown CertDN';
     } on PlatformException {
       libInitializeResult = -1;
-      certDn = 'Failed to get CertDN.';
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -77,8 +71,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _libInitializeResult = libInitializeResult;
-      _certDn = certDn;
+      _libInitializeResult = libInitializeResult ?? -1;
     });
   }
 
@@ -96,6 +89,10 @@ class _MyAppState extends State<MyApp> {
             ),
             Text(
                 'Library initialize result : $_libInitializeResult, ${LibInitResult.systemNativeInitSuccess.equalTo(_libInitializeResult)}'),
+            ElevatedButton(
+              onPressed: () => downloadCertDn('CCC0EMR'),
+              child: const Text('Login to CCC0EMR'),
+            ),
             Text('CertDN: $_certDn'),
           ],
         ),
@@ -108,6 +105,27 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _permissionStatus = status;
+    });
+  }
+
+  Future<void> downloadCertDn(String staffNo) async {
+    String certDn;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
+    try {
+      certDn = await _certificationPlugin.getCertification(staffNo) ??
+          'Unknown CertDN';
+    } on PlatformException {
+      certDn = 'Failed to get CertDN.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _certDn = certDn;
     });
   }
 }

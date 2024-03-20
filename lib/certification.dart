@@ -1,4 +1,3 @@
-
 import 'certification_platform_interface.dart';
 
 class Certification {
@@ -19,7 +18,6 @@ class Certification {
   }
 
   Future<List<Object?>?> getUserCertificateListWithGpki() async {
-    return CertificationPlatform.instance
-        .getUserCertificateListWithGpki();
+    return CertificationPlatform.instance.getUserCertificateListWithGpki();
   }
 }

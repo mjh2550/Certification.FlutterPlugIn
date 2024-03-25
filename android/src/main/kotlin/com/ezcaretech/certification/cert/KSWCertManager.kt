@@ -23,9 +23,6 @@ class KSWCertManager {
             }
         }
 
-//        fun setSelectedCert(selectedCert : KSCertificate?){
-//            KSW_CertManager.selectedCert = selectedCert
-//        }
     }
 
     @Throws(KSException::class)

@@ -69,6 +69,50 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           result.error("KSException", ex.message, ex.stackTrace)
         }
       }
+      "createCert" -> {
+        result.success("testxml")
+      }
+//      "filterByExpiredTime" -> {
+//        try {
+////          result.success(getCertifications())
+//        } catch (ex: KSException) {
+//          result.error("KSException", ex.message, ex.stackTrace)
+//        }
+//      }
+      "deleteCert" -> {
+        try {
+          // result.success(KSCertificateManager.deleteCert(call.argument("kscert")))
+          result.success(1)
+        } catch (ex: KSException) {
+          result.error("KSException", ex.message, ex.stackTrace)
+        }
+      }
+      "encryptCert" -> {
+        try {
+          // var xmlString = call.argument("xmlString")
+          // var certPw = call.argument("certPw")
+          result.success("enc")
+        } catch (ex: KSException) {
+          result.error("KSException", ex.message, ex.stackTrace)
+        }
+      }
+      "checkPwd" -> {
+        try {
+          // var kscert = call.argument("kscert")
+          // var certPw = call.argument("certPw")
+          result.success(1)
+        } catch (ex: KSException) {
+          result.error("KSException", ex.message, ex.stackTrace)
+        }
+      }
+      "verifySignData" -> {
+        try {
+          // var sign = call.argument("sign")
+          result.success("sign")
+        } catch (ex: KSException) {
+          result.error("KSException", ex.message, ex.stackTrace)
+        }
+      }
       else -> {
         result.notImplemented()
       }

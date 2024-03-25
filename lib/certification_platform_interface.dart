@@ -42,4 +42,22 @@ abstract class CertificationPlatform extends PlatformInterface {
   Future<List<Object?>?> getUserCertificateListWithGpki() {
     throw UnimplementedError('getUserCertificateListWithGpki() has not been implemented.');
   }
+
+  Future<String> verifySignData(String sign) {
+    throw UnimplementedError('verifySignData() has not been implemented.');
+  }
+
+  Future<String> encryptCert(String xmlString, String certPw) {
+    throw UnimplementedError('encryptCert() has not been implemented.');
+  }
+
+  ///+params : kscert
+  Future<int> checkPwd(String pw) {
+    throw UnimplementedError('checkPwd() has not been implemented.');
+  }
+
+  ///+params : ksCert
+  Future<int> deleteCert() {
+    throw UnimplementedError('deleteCert() has not been implemented.');
+  }
 }

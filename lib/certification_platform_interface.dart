@@ -51,13 +51,19 @@ abstract class CertificationPlatform extends PlatformInterface {
     throw UnimplementedError('encryptCert() has not been implemented.');
   }
 
-  ///+params : kscert
-  Future<int> checkPwd(String pw) {
+  Future<int> checkPwd(String keyFilePath, String certPw) {
     throw UnimplementedError('checkPwd() has not been implemented.');
   }
 
-  ///+params : ksCert
-  Future<int> deleteCert() {
+  Future<int> deleteCert(String keyFilePath) {
     throw UnimplementedError('deleteCert() has not been implemented.');
+  }
+
+  Future<String> getCertFilePath(String certDn) {
+    throw UnimplementedError('getCertFilePath() has not been implemented.');
+  }
+
+  Future<String> getCertKeyFilePath(String certDn) {
+    throw UnimplementedError('getCertKeyFilePath() has not been implemented.');
   }
 }

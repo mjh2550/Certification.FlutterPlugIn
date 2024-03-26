@@ -23,9 +23,12 @@ class _MyAppState extends State<MyApp> {
   String _certDn = 'Unknown';
   int _delTest = 0; 
   int _checkTest = 0;
+  int _gpkiTest = 0;
   String _verifyTest = 'N';
   String _encTest = 'N';
   String _createTest = 'N';
+  String _filePathTest = 'N';
+  String _keyFilePathTest = 'N';
   PermissionStatus _permissionStatus = PermissionStatus.denied;
   final _certificationPlugin = Certification();
 
@@ -101,13 +104,31 @@ class _MyAppState extends State<MyApp> {
             Text('CertDN: $_certDn'),
 
             ElevatedButton(
-              onPressed: () => deleteCert(),
+              onPressed: () => getCertWithGPKI(),
+              child: const Text('GPKI TEST'),
+            ),
+            Text('CertWithGPKI: $_gpkiTest'),
+
+            ElevatedButton(
+              onPressed: () => getCertfilePath(_certDn),
+              child: const Text('certFilePath TEST'),
+            ),
+            Text('certFilePath: $_filePathTest'),
+
+            ElevatedButton(
+              onPressed: () => getCertPrivateKeyfilePath(_certDn),
+              child: const Text('KeyFilePath TEST'),
+            ),
+            Text('KeyFilePath: $_keyFilePathTest'),
+
+            ElevatedButton(
+              onPressed: () => deleteCert(_filePathTest),
               child: const Text('deleteCert Test'),
             ),
             Text('delTest: $_delTest'),
 
             ElevatedButton(
-              onPressed: () => checkCertPassword(),
+              onPressed: () => checkCertPassword(_filePathTest,"1111"),
               child: const Text('CheckPW Test'),
             ),
             Text('checkTest: $_checkTest'),
@@ -126,7 +147,7 @@ class _MyAppState extends State<MyApp> {
 
             ElevatedButton(
               onPressed: () => encryptCert(),
-              child: const Text('encript Test'),
+              child: const Text('encrypt Test'),
             ),
             Text('encTest: $_encTest'),
           ],
@@ -164,20 +185,25 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  ///인증서 계정 인증
-  // Future<void> doCertAuth() async {
-  //   try {
+  ///GPKI 테스트
+  Future<void> getCertWithGPKI() async {
+    List<Object?>? testResult;
+    try {
+      testResult = await _certificationPlugin.getUserCertificateListWithGpki();
+    } on PlatformException {
+      testResult = [];
+    }
 
-  //   } on PlatformException {
-
-  //   }
-  // }
+    setState(() {
+      _gpkiTest = testResult?.length ?? 0;
+    });
+  }
 
   ///인증서 비밀번호 검증
-  Future<void> checkCertPassword() async {
+  Future<void> checkCertPassword(String keyFilePath, String certPw) async {
     int testResult;
     try {
-      testResult = await _certificationPlugin.checkPwd('pw');
+      testResult = await _certificationPlugin.checkPwd(keyFilePath, certPw);
     } on PlatformException {
       testResult = -1;
     }
@@ -239,10 +265,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   ///인증서 데이터 삭제
-  Future<void> deleteCert() async {
+  Future<void> deleteCert(String keyFilePath) async {
     int testResult;
     try {
-      testResult = await _certificationPlugin.deleteCert();
+      testResult = await _certificationPlugin.deleteCert(keyFilePath);
     } on PlatformException {
       testResult = -1;
     }
@@ -252,36 +278,29 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> getCertfilePath(String certDn) async {
+    String testResult;
+    try {
+      testResult = await _certificationPlugin.getCertFilePath(certDn);
+    } on PlatformException {
+      testResult = "notfound";
+    }
 
+    setState(() {
+      _filePathTest = testResult;
+    });
+  }
 
-  
+  Future<void> getCertPrivateKeyfilePath(String certDn) async {
+    String testResult;
+    try {
+      testResult = await _certificationPlugin.getCertKeyFilePath(certDn);
+    } on PlatformException {
+      testResult = "notfound";
+    }
 
-  /**
-   *     //다운로드(Download)
-    fun getICertClient(): Any?
-    fun getCertResponse(userId: String, iCertClient: Any?): String?
-    fun getICert(certResponse : String?, certList : Vector<*>): ICert
-    fun getCertList(context: Context): Vector<*>?
-    fun getKsCert(iCert: ICert): Any?
-
-    //인증서 로그인(Auth)
-    fun checkPwd(ksCert: Any?, certPw: String): Boolean
-    fun getAuthCert(
-        certId: String,
-        certPw: String,
-        downloadCert: DownloadCert
-    ): AuthCert
-
-    //사인 데이터 생성(Sign)
-    fun signActData(arrayList: ArrayList<Sign>) : String?
-    fun signConvertData(xmlData : String, authCert: AuthCert) : String?
-
-    //사인 데이터 검증(xml - SOAP)
-    fun verifySignData(convertData : String, authCert: AuthCert) : Boolean
-    //사인 데이터 검증(JSON - REST)
-    fun verifications(convertData: String, appCertRESTServiceUrl: String) : VerifyCert
-
-    //인증서 삭제
-    fun deleteCert(ksCert: Any?) : Int
-   */
+    setState(() {
+      _keyFilePathTest = testResult;
+    });
+  }
 }

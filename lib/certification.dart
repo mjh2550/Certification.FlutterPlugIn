@@ -22,8 +22,8 @@ class Certification {
   }
 
   ///인증서 비밀번호 검증
-  Future<int> checkPwd(String pw) async {
-    return CertificationPlatform.instance.checkPwd(pw);
+  Future<int> checkPwd(String keyFilePath, String certPw) async {
+    return CertificationPlatform.instance.checkPwd(keyFilePath, certPw);
   }
 
   ///인증서 데이터 검증(SOAP)(Deprecated)
@@ -37,8 +37,18 @@ class Certification {
   }
 
   ///인증서 데이터 삭제
-  Future<int> deleteCert() async {
-    return CertificationPlatform.instance.deleteCert();
+  Future<int> deleteCert(String keyFilePath) async {
+    return CertificationPlatform.instance.deleteCert(keyFilePath);
+  }
+
+  ///인증서 파일 경로
+  Future<String> getCertFilePath(String certDn) async {
+    return CertificationPlatform.instance.getCertFilePath(certDn);
+  }
+
+  ///인증서 개인 키 경로
+  Future<String> getCertKeyFilePath(String certDn) async {
+    return CertificationPlatform.instance.getCertKeyFilePath(certDn);
   }
 
   ///XML 인증서 데이터 생성

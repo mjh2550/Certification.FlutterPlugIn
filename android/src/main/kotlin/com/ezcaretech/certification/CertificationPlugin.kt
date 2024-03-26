@@ -2,10 +2,9 @@ package com.ezcaretech.certification
 
 import android.app.Activity
 import android.content.Context
-import androidx.annotation.NonNull
+import android.os.Environment
 
 // import com.ezcaretech.certification.verify
-import com.ezcaretech.certification.cert.KSWCertManager
 import com.isolutec.icertmanager.iCertClient
 import com.lumensoft.ks.KSCertificate
 import com.lumensoft.ks.KSCertificateLoader
@@ -19,6 +18,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.io.File
 
 import java.util.*
 
@@ -72,19 +72,14 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "createCert" -> {
         result.success("testxml")
       }
-//      "filterByExpiredTime" -> {
-//        try {
-////          result.success(getCertifications())
-//        } catch (ex: KSException) {
-//          result.error("KSException", ex.message, ex.stackTrace)
-//        }
-//      }
       "deleteCert" -> {
         try {
-          // result.success(KSCertificateManager.deleteCert(call.argument("kscert")))
-          result.success(1)
+          var keyFilePath : String? = call.argument("keyFilePath")
+          var response = KSCertificateManager.deleteCert(keyFilePath)
+          result.success(response)
         } catch (ex: KSException) {
           result.error("KSException", ex.message, ex.stackTrace)
+          result.success(-1)
         }
       }
       "encryptCert" -> {
@@ -98,9 +93,10 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       "checkPwd" -> {
         try {
-          // var kscert = call.argument("kscert")
-          // var certPw = call.argument("certPw")
-          result.success(1)
+           var keyFilePath : String? = call.argument("keyFilePath")
+           var certPw : String? = call.argument("certPw")
+           var response = if(KSCertificateManager.checkPwd(keyFilePath, certPw)) 1 else 2
+          result.success(response)
         } catch (ex: KSException) {
           result.error("KSException", ex.message, ex.stackTrace)
         }
@@ -113,9 +109,52 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           result.error("KSException", ex.message, ex.stackTrace)
         }
       }
+      "getCertFilePath" -> {
+        var certDn : String = call.argument("certDn") ?: ""
+        result.success(getCertFilePath(certDn))
+      }
+      "getPrivateKeyFilePath" -> {
+        var certDn : String = call.argument("certDn") ?: ""
+        result.success(getPrivateKeyFilePath(certDn ))
+      }
       else -> {
         result.notImplemented()
       }
+    }
+  }
+
+
+  private fun getCertFilePath(certDn: String): String {
+    // 인증서와 개인 키가 저장된 기본 디렉토리 경로
+    val baseDirPath = "${Environment.getExternalStorageDirectory()}/NPKI/SignKorea/USER/"
+
+    // 인증서 파일 경로
+    val certFilePath = "$baseDirPath$certDn/signCert.der"
+
+    // 인증서 파일 존재 여부 확인
+    val certFile = File(certFilePath)
+    return if (certFile.exists()) {
+      certFilePath
+    } else {
+      // 인증서 파일을 찾지 못한 경우에 대한 처리
+      "not_found"
+    }
+  }
+
+  private fun getPrivateKeyFilePath(certDn: String): String {
+    // 인증서와 개인 키가 저장된 기본 디렉토리 경로
+    val baseDirPath = "${Environment.getExternalStorageDirectory()}/NPKI/SignKorea/USER/"
+
+    // 개인 키 파일 경로
+    val privateKeyFilePath = "$baseDirPath$certDn/signPri.key"
+
+    // 개인 키 파일 존재 여부 확인
+    val privateKeyFile = File(privateKeyFilePath)
+    return if (privateKeyFile.exists()) {
+      privateKeyFilePath
+    } else {
+      // 개인 키 파일을 찾지 못한 경우에 대한 처리
+      "not_found"
     }
   }
 

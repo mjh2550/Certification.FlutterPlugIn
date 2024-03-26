@@ -38,10 +38,10 @@ class MethodChannelCertification extends CertificationPlatform {
     return await methodChannel.invokeMethod('getUserCertificateListWithGpki');
   }
 
-  ///인증서 비밀번호 검증   ///+params : kscert
+  ///인증서 비밀번호 검증  
   @override
-  Future<int> checkPwd(String certPw) async {
-    return await methodChannel.invokeMethod('checkPwd', {"kscert" : "kscert","certPw": certPw});
+  Future<int> checkPwd(String keyFilePath, String certPw) async {
+    return await methodChannel.invokeMethod('checkPwd', {"keyFilePath" : keyFilePath,"certPw": certPw});
   }
 
   ///인증서 데이터 검증(SOAP)(Deprecated)
@@ -57,10 +57,22 @@ class MethodChannelCertification extends CertificationPlatform {
         'encryptCert', {"xmlString": xmlString, "certPw": certPw});
   }
 
-  ///인증서 데이터 삭제   ///+params : kscert
+  ///인증서 데이터 삭제   
   @override
-  Future<int> deleteCert() async {
-    return await methodChannel.invokeMethod('deleteCert', {"kscert": "kscert"});
+  Future<int> deleteCert(String keyFilePath) async {
+    return await methodChannel.invokeMethod('deleteCert', {"keyFilePath": keyFilePath});
+  }
+
+  ///인증서 파일 경로
+  @override
+  Future<String> getCertFilePath(String certDn) async {
+    return await methodChannel.invokeMethod('getCertFilePath', {"certDn" : certDn});
+  }
+
+  ///인증서 개인 키 경로
+  @override
+  Future<String> getCertKeyFilePath(String certDn) async {
+    return await methodChannel.invokeMethod('getPrivateKeyFilePath',  {"certDn" : certDn});
   }
 
   ///XML 인증서 데이터 생성

@@ -95,7 +95,7 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         try {
            var keyFilePath : String? = call.argument("keyFilePath")
            var certPw : String? = call.argument("certPw")
-           var response = if(KSCertificateManager.checkPwd(keyFilePath, certPw)) 1 else 2
+           var response = if(KSCertificateManager.checkPwd(keyFilePath, certPw)) 1 else -1
           result.success(response)
         } catch (ex: KSException) {
           result.error("KSException", ex.message, ex.stackTrace)

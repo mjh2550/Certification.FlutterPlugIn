@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   int _libInitializeResult = -1;
   String _certDn = 'Unknown';
-  int _delTest = 0; 
+  int _delTest = -2;
   int _checkTest = 0;
   int _gpkiTest = 0;
   String _verifyTest = 'N';
@@ -29,6 +29,7 @@ class _MyAppState extends State<MyApp> {
   String _createTest = 'N';
   String _filePathTest = 'N';
   String _keyFilePathTest = 'N';
+  TextEditingController _textController = TextEditingController();
   PermissionStatus _permissionStatus = PermissionStatus.denied;
   final _certificationPlugin = Certification();
 
@@ -102,49 +103,48 @@ class _MyAppState extends State<MyApp> {
               child: const Text('Login to CCC0EMR'),
             ),
             Text('CertDN: $_certDn'),
-
             ElevatedButton(
               onPressed: () => getCertWithGPKI(),
               child: const Text('GPKI TEST'),
             ),
             Text('CertWithGPKI: $_gpkiTest'),
-
             ElevatedButton(
               onPressed: () => getCertfilePath(_certDn),
               child: const Text('certFilePath TEST'),
             ),
             Text('certFilePath: $_filePathTest'),
-
             ElevatedButton(
               onPressed: () => getCertPrivateKeyfilePath(_certDn),
               child: const Text('KeyFilePath TEST'),
             ),
             Text('KeyFilePath: $_keyFilePathTest'),
-
             ElevatedButton(
               onPressed: () => deleteCert(_filePathTest),
               child: const Text('deleteCert Test'),
             ),
-            Text('delTest: $_delTest'),
-
+            Text('delTest(none:-2, success:0, fail:-1): $_delTest'),
             ElevatedButton(
-              onPressed: () => checkCertPassword(_filePathTest,"1111"),
+              onPressed: () =>
+                  checkCertPassword(_filePathTest, _textController.text),
               child: const Text('CheckPW Test'),
             ),
-            Text('checkTest: $_checkTest'),
-
+            Text('checkTest(success:1, fail:-1): $_checkTest'),
+            TextField(
+              controller: _textController,
+              decoration: const InputDecoration(
+                hintText: 'Enter CertPw',
+              ),
+            ),
             ElevatedButton(
               onPressed: () => createCert(),
               child: const Text('createXML Test'),
             ),
             Text('createXML: $_createTest'),
-
             ElevatedButton(
               onPressed: () => verifySignData(),
               child: const Text('verifyTest'),
             ),
             Text('verifyTest: $_verifyTest'),
-
             ElevatedButton(
               onPressed: () => encryptCert(),
               child: const Text('encrypt Test'),
@@ -231,7 +231,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> encryptCert() async {
     String testResult;
     try {
-      testResult = await _certificationPlugin.encryptCert('xmltest','aaaa');
+      testResult = await _certificationPlugin.encryptCert('xmltest', 'aaaa');
     } on PlatformException {
       testResult = 'fail';
     }
@@ -257,11 +257,7 @@ class _MyAppState extends State<MyApp> {
 
   ///인증서 데이터 검증(REST)
   Future<void> verifications() async {
-    try {
-
-    } on PlatformException {
-      
-    }
+    try {} on PlatformException {}
   }
 
   ///인증서 데이터 삭제
@@ -275,6 +271,11 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _delTest = testResult;
+      if(testResult == 0) {
+        _certDn = "";
+        _filePathTest = "";
+        _keyFilePathTest = "";
+      }
     });
   }
 

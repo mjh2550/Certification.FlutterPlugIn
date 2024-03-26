@@ -55,18 +55,18 @@
 
      /// 생성된 XML을 암호화 처리
      @Throws(KSException::class, UnsupportedEncodingException::class)
-     fun encryptionCertData(xmlString: String, ksCertificate: KSCertificate, certPassword: String): String? {
+     fun encryptCert(xmlString: String, ksCertificate: KSCertificate, certPassword: String): String? {
          return try {
              val xmlSignByteArray : ByteArray = xmlString.toByteArray(charset("euc-kr"))
              val signResult = KSSign.koscomSign(
                  ksCertificate,
                  xmlSignByteArray,
                  certPassword
-             )
+             ) ?: return null
              val encodedSignResult = KSBase64.encode(signResult)
              String(encodedSignResult)
          } catch (e: Exception) {
-             Log.e("encryptionCertData", e.message ?: "")
+             Log.e("encryptionCert", e.message ?: "")
              null
          }
      }

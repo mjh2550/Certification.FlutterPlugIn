@@ -39,7 +39,7 @@ abstract class CertificationPlatform extends PlatformInterface {
     throw UnimplementedError('getCertification() has not been implemented.');
   }
 
-  Future<List<Object?>?> getUserCertificateListWithGpki() {
+  Future<List<dynamic>?> getUserCertificateListWithGpki() {
     throw UnimplementedError('getUserCertificateListWithGpki() has not been implemented.');
   }
 
@@ -47,7 +47,7 @@ abstract class CertificationPlatform extends PlatformInterface {
     throw UnimplementedError('verifySignData() has not been implemented.');
   }
 
-  Future<String> encryptCert(String xmlString, String certPw) {
+  Future<String> encryptCert(String xmlString, String iCertDn, String certPw) {
     throw UnimplementedError('encryptCert() has not been implemented.');
   }
 

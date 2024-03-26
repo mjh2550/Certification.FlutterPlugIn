@@ -3,6 +3,7 @@ package com.ezcaretech.certification
 import android.app.Activity
 import android.content.Context
 import android.os.Environment
+import com.ezcaretech.certification.cert.XMLSignGenerator
 
 // import com.ezcaretech.certification.verify
 import com.isolutec.icertmanager.iCertClient
@@ -10,6 +11,7 @@ import com.lumensoft.ks.KSCertificate
 import com.lumensoft.ks.KSCertificateLoader
 import com.lumensoft.ks.KSCertificateManager
 import com.lumensoft.ks.KSException
+import com.lumensoft.ks.KSUtil
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -19,6 +21,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import java.io.File
+import java.io.IOException
 
 import java.util.*
 
@@ -64,13 +67,11 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       "getUserCertificateListWithGpki" -> {
         try {
-          result.success(getCertifications())
+          var list : List<KSCertificate?> = getCertifications()
+          result.success(list)
         } catch (ex: KSException) {
           result.error("KSException", ex.message, ex.stackTrace)
         }
-      }
-      "createCert" -> {
-        result.success("testxml")
       }
       "deleteCert" -> {
         try {
@@ -84,9 +85,22 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       "encryptCert" -> {
         try {
-          // var xmlString = call.argument("xmlString")
-          // var certPw = call.argument("certPw")
-          result.success("enc")
+          thread {
+            var xmlString: String = call.argument("xmlString") ?: ""
+            var certPw: String = call.argument("certPw") ?: ""
+            var iCertDn: String = call.argument("iCertDn") ?: ""
+            var ksCertificate : KSCertificate? = getKSCertificate(iCertDn)
+            if(ksCertificate == null) {
+              result.error("KSException", "인증서를 불러오지 못해 암호화에 실패하였습니다.","")
+            } else {
+              var encryptionXml = XMLSignGenerator().encryptCert(
+                xmlString,
+                ksCertificate!!,
+                certPw
+              )
+              result.success(encryptionXml)
+            }
+          }
         } catch (ex: KSException) {
           result.error("KSException", ex.message, ex.stackTrace)
         }
@@ -124,6 +138,9 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
 
+  /**
+   * 인증서 경로 찾는 함수
+   */
   private fun getCertFilePath(certDn: String): String {
     // 인증서와 개인 키가 저장된 기본 디렉토리 경로
     val baseDirPath = "${Environment.getExternalStorageDirectory()}/NPKI/SignKorea/USER/"
@@ -141,6 +158,9 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
+  /**
+   * 인증서 개인 키 경로 찾는 함수
+   */
   private fun getPrivateKeyFilePath(certDn: String): String {
     // 인증서와 개인 키가 저장된 기본 디렉토리 경로
     val baseDirPath = "${Environment.getExternalStorageDirectory()}/NPKI/SignKorea/USER/"
@@ -157,6 +177,25 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "not_found"
     }
   }
+
+  // @Throws(KSException::class)
+  // private fun ksCertificate(filePath: String): KSCertificate {
+  //   val certificateData = KSUtil.readFile(filePath)
+  //   return KSCertificate(certificateData, filePath)
+  // }
+
+  private fun getKSCertificate(iCertDn: String): KSCertificate? {
+    return try {
+        val list: List<KSCertificate?> = getCertifications()
+        val ksCert: KSCertificate? = list.firstOrNull {
+          it?.subjectDn == iCertDn
+        }
+        ksCert
+      } catch (ex: KSException) {
+        null
+      }
+  }
+
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)
@@ -178,10 +217,10 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     TODO("Not yet implemented")
   }
 
-  private fun getCertifications(): Vector<KSCertificate?>? {
-    var userCerts: Vector<KSCertificate?>?
-    userCerts = KSCertificateLoader.getUserCertificateListWithGpki(context) as Vector<KSCertificate?>?
+  private fun getCertifications(): List<KSCertificate?> {
+    var userCerts: Vector<KSCertificate?>? =
+      KSCertificateLoader.getUserCertificateListWithGpki(context) as Vector<KSCertificate?>?
     userCerts = KSCertificateLoader.FilterByExpiredTime(userCerts) as Vector<KSCertificate?>?
-    return userCerts
+    return userCerts?.toList() ?: listOf()
   }
 }

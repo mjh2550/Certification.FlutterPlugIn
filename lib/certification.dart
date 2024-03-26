@@ -17,7 +17,7 @@ class Certification {
     return CertificationPlatform.instance.getCertification(userId);
   }
 
-  Future<List<Object?>?> getUserCertificateListWithGpki() async {
+  Future<List<dynamic>?> getUserCertificateListWithGpki() async {
     return CertificationPlatform.instance.getUserCertificateListWithGpki();
   }
 
@@ -32,8 +32,8 @@ class Certification {
   }
 
   ///인증서 데이터 암호화
-  Future<String> encryptCert(String xmlString, String certPw) async {
-    return CertificationPlatform.instance.encryptCert(xmlString, certPw);
+  Future<String> encryptCert(String xmlString, String iCertDn, String certPw) async {
+    return CertificationPlatform.instance.encryptCert(xmlString, iCertDn, certPw);
   }
 
   ///인증서 데이터 삭제

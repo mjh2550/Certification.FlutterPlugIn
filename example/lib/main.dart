@@ -187,7 +187,7 @@ class _MyAppState extends State<MyApp> {
 
   ///GPKI 테스트
   Future<void> getCertWithGPKI() async {
-    List<Object?>? testResult;
+    List<dynamic>? testResult;
     try {
       testResult = await _certificationPlugin.getUserCertificateListWithGpki();
     } on PlatformException {
@@ -231,7 +231,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> encryptCert() async {
     String testResult;
     try {
-      testResult = await _certificationPlugin.encryptCert('xmltest', 'aaaa');
+      testResult = await _certificationPlugin.encryptCert(_createTest, _certDn, _textController.text);
     } on PlatformException {
       testResult = 'fail';
     }

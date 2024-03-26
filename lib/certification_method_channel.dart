@@ -34,7 +34,7 @@ class MethodChannelCertification extends CertificationPlatform {
   }
 
   @override
-  Future<List<Object?>?> getUserCertificateListWithGpki() async {
+  Future<List<dynamic>?> getUserCertificateListWithGpki() async {
     return await methodChannel.invokeMethod('getUserCertificateListWithGpki');
   }
 
@@ -52,9 +52,9 @@ class MethodChannelCertification extends CertificationPlatform {
 
   ///인증서 데이터 암호화
   @override
-  Future<String> encryptCert(String xmlString, String certPw) async {
+  Future<String> encryptCert(String xmlString, String iCertDn, String certPw) async {
     return await methodChannel.invokeMethod(
-        'encryptCert', {"xmlString": xmlString, "certPw": certPw});
+        'encryptCert', {"xmlString": xmlString, "iCertDn" : iCertDn ,"certPw": certPw});
   }
 
   ///인증서 데이터 삭제   

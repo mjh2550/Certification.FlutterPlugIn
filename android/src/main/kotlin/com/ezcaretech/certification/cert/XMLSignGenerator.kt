@@ -62,11 +62,14 @@
                  ksCertificate,
                  xmlSignByteArray,
                  certPassword
-             ) ?: return null
+             )
              val encodedSignResult = KSBase64.encode(signResult)
              String(encodedSignResult)
          } catch (e: Exception) {
              Log.e("encryptionCert", e.message ?: "")
+             null
+         } catch (ex : KSException) {
+             Log.e("encryptionCert", ex.message ?: "")
              null
          }
      }

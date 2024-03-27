@@ -67,7 +67,7 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       "getUserCertificateListWithGpki" -> {
         try {
-          var list : List<KSCertificate?> = getCertifications()
+          var list : Vector<KSCertificate?>? = getCertifications()
           result.success(list)
         } catch (ex: KSException) {
           result.error("KSException", ex.message, ex.stackTrace)
@@ -186,9 +186,15 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun getKSCertificate(iCertDn: String): KSCertificate? {
     return try {
-        val list: List<KSCertificate?> = getCertifications()
-        val ksCert: KSCertificate? = list.firstOrNull {
-          it?.subjectDn == iCertDn
+        val list: Vector<KSCertificate?>? = getCertifications()
+        var ksCert: KSCertificate? = null
+        list?.let { vector ->
+          for (cert in vector) {
+            if (cert?.subjectDn == iCertDn) {
+              ksCert = cert
+              break
+            }
+          }
         }
         ksCert
       } catch (ex: KSException) {
@@ -217,10 +223,10 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     TODO("Not yet implemented")
   }
 
-  private fun getCertifications(): List<KSCertificate?> {
+  private fun getCertifications(): Vector<KSCertificate?>? {
     var userCerts: Vector<KSCertificate?>? =
       KSCertificateLoader.getUserCertificateListWithGpki(context) as Vector<KSCertificate?>?
     userCerts = KSCertificateLoader.FilterByExpiredTime(userCerts) as Vector<KSCertificate?>?
-    return userCerts?.toList() ?: listOf()
+    return userCerts
   }
 }

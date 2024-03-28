@@ -24,6 +24,42 @@ class MockCertificationPlatform
 
   @override
   Future<bool?> setServiceUrl(String url) => Future.value(true);
+  
+  @override
+  Future<int> checkPwd(String keyFilePath, String certPw) {
+    // TODO: implement checkPwd
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<int> deleteCert(String keyFilePath) {
+    // TODO: implement deleteCert
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<String> encryptCert(String xmlString, String certPw) {
+    // TODO: implement encryptCert
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<String> getCertFilePath(String certDn) {
+    // TODO: implement getCertFilePath
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<String> getCertKeyFilePath(String certDn) {
+    // TODO: implement getCertKeyFilePath
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<String> verifySignData(String sign) {
+    // TODO: implement verifySignData
+    throw UnimplementedError();
+  }
 }
 
 void main() {

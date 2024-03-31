@@ -70,7 +70,7 @@ enum LibInitResult {
   passwordIsNull(value: -3603),
   makeCertificateListFailure(value: -3604),
   appNativeInitSuccess(value: 3700),
-  systemNativeInitSuccess(value: 3701),
+  systemNativeInitSuccess(value: -3701),
   pathNativeInitSuccess(value: 3702),
   notExistLibraryFailure(value: -3703);
 

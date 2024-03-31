@@ -23,47 +23,15 @@ abstract class CertificationPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<int?> initialize(String downloadUrl, String verifyUrl) {
+    throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  Future<int?> libInitialize() {
-    throw UnimplementedError('libInitialize() has not been implemented.');
+  Future<bool?> certAuth(String userId, String password) {
+    throw UnimplementedError('certAuth() has not been implemented.');
   }
 
-  Future<bool?> setServiceUrl(String url) {
-    throw UnimplementedError('setServiceUrl() has not been implemented.');
-  }
-
-  Future<String?> getCertification(String userId) {
-    throw UnimplementedError('getCertification() has not been implemented.');
-  }
-
-  Future<List<dynamic>?> getUserCertificateListWithGpki() {
-    throw UnimplementedError('getUserCertificateListWithGpki() has not been implemented.');
-  }
-
-  Future<String> verifySignData(String sign) {
-    throw UnimplementedError('verifySignData() has not been implemented.');
-  }
-
-  Future<String> encryptCert(String xmlString, String iCertDn, String certPw) {
-    throw UnimplementedError('encryptCert() has not been implemented.');
-  }
-
-  Future<int> checkPwd(String keyFilePath, String certPw) {
-    throw UnimplementedError('checkPwd() has not been implemented.');
-  }
-
-  Future<int> deleteCert(String keyFilePath) {
-    throw UnimplementedError('deleteCert() has not been implemented.');
-  }
-
-  Future<String> getCertFilePath(String certDn) {
-    throw UnimplementedError('getCertFilePath() has not been implemented.');
-  }
-
-  Future<String> getCertKeyFilePath(String certDn) {
-    throw UnimplementedError('getCertKeyFilePath() has not been implemented.');
+  Future<String?> encrypt(String userId, String password, String plainText) {
+    throw UnimplementedError('encrypt() has not been implemented.');
   }
 }

@@ -3,6 +3,7 @@ version '1.0-SNAPSHOT'
 
 buildscript {
     ext.kotlin_version = '1.7.10'
+    ext.retrofit2_version = '2.9.0'
     repositories {
         google()
         mavenCentral()
@@ -29,7 +30,7 @@ android {
         namespace 'com.ezcaretech.certification'
     }
 
-    compileSdkVersion 33
+    compileSdk 33
 
     productFlavors {
     }
@@ -63,12 +64,18 @@ android {
     }
 
     dependencies {
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+
+        // Retrofit2
+        implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
+        implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
+        implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
+
         // signkorea(전자서명)
-        implementation files('libs/ksoap2-base-3.6.4.jar')
-        implementation files('libs/ksoap2-j2se-3.6.4.jar')
-        implementation files('libs/KeySharpWireless1_ex_1.5.0.jar')
+        implementation fileTree(dir: 'libs', include: ['*.jar'], exclude: ['KeySharpWireless1_ex_1.5.0.jar'])
         implementation fileTree(dir: 'libs\\iCert', include: ['*.aar', '*.jar'], exclude: [])
-        implementation fileTree(dir: 'libs\\signkorea', include: ['*.aar', '*.jar'], exclude: ['SignKorea-Android.jar'])
+        //implementation fileTree(dir: 'libs\\signkorea', include: ['*.aar', '*.jar'], exclude: ['SignKorea-Android.jar'])
+        implementation fileTree(dir: 'libs\\signkorea', include: ['*.aar', '*.jar'], exclude: ['SignKorea-Billing.jar', 'SignKorea-DeviceInfo.jar', 'SignKorea-FingerprintAuth.jar'])
 
         //SEED알고리즘
         implementation 'org.bouncycastle:bcpkix-jdk15on:1.68'

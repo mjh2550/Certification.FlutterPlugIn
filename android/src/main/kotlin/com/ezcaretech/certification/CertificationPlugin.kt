@@ -43,20 +43,24 @@ class CertificationPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val retVal = CertificationManager.init(downloadUrl, verifyUrl)
         // result.success(retVal)
         if(retVal == -3701) {
-          try {
-            // val userId: String = call.argument("userId") ?: ""
-            // val password: String = call.argument("password") ?: ""
-            // Log.i("userId", userId)
-            // Log.i("password", password)
-            val retVal = CertificationManager.checkPassword(context, "CCC0EMR", "88888888")
-            Log.i("retVal", retVal.toString())
-            result.success(retVal)
-          } catch (ex: KSException) {
-            Log.w("KSException", "${ex.message}\r\n${ex.stackTrace}")
-            result.error(ex.errorCode.toString(), ex.message, ex)
-          } catch (ex: Exception) {
-            Log.w("Exception", "${ex.message}\r\n${ex.stackTrace}")
-            result.error("Exception", ex.message, ex)
+          GlobalScope.launch {
+            try {
+              // val userId: String = call.argument("userId") ?: ""
+              // val password: String = call.argument("password") ?: ""
+              // Log.i("userId", userId)
+              // Log.i("password", password)
+              val retVal = CertificationManager.checkPassword(context, "CCC0EMR", "88888888")
+              Log.i("retVal", retVal.toString())
+              if(retVal) {
+                result.success(-3701)
+              }
+            } catch (ex: KSException) {
+              Log.w("KSException", "${ex.message}\r\n${ex.stackTrace}")
+              result.error(ex.errorCode.toString(), ex.message, ex)
+            } catch (ex: Exception) {
+              Log.w("Exception", "${ex.message}\r\n${ex.stackTrace}")
+              result.error("Exception", ex.message, ex)
+            }
           }
         }
       }
